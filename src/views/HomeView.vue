@@ -6,6 +6,8 @@
     <div v-for="(board, index) in boards" :key="index">
       <BoardProfile :board="board"></BoardProfile>
     </div>
+    <h2 v-if="boards.length === 0">该版块没有帖子！</h2>
+    <h2 v-else-if="noData === true">已经到底了！</h2>
   </div>
 </template>
 
@@ -29,6 +31,7 @@ const pageSize = ref(8);
 const scrollContainer = ref<HTMLElement>();
 
 const fetchBoards = async () => {
+  console.log("fetchBoards");
   try {
     const resp = await apiAxios.get<ApiResponse<Board[]>>("/boards", {
       params: {
@@ -40,6 +43,8 @@ const fetchBoards = async () => {
     if (newPage.length !== 0) {
       boards.value = [...boards.value, ...newPage];
       ++currPage.value;
+    } else {
+      noData.value = true;
     }
   } catch (error: any) {
     console.log(error);
@@ -48,6 +53,9 @@ const fetchBoards = async () => {
 
 let scrollTimer: number | null = null;
 const handleScroll = async () => {
+  if (loading.value || noData.value) {
+    return;
+  }
   if (!scrollContainer.value) {
     return;
   }
@@ -61,7 +69,10 @@ const handleScroll = async () => {
   }
   scrollTimer = setTimeout(async () => {
     if (scrollHeight - scrollTop - clientHeight < threshold) {
-      await fetchBoards();
+      loading.value = true;
+      await fetchBoards().finally(() => {
+        loading.value = false;
+      });
     }
   }, 100);
 };

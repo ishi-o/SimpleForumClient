@@ -18,6 +18,7 @@
         <router-link to="/register">
           <button>注册</button>
         </router-link>
+        <button @click="handleRefresh">刷新</button>
       </div>
     </div>
   </nav>
@@ -26,6 +27,7 @@
 <script setup lang="ts">
 import { authInjectKey } from "@/composables/useAuth";
 import { themeInjectKey } from "@/composables/useTheme";
+import router from "@/router";
 import { inject } from "vue";
 
 const auth = inject(authInjectKey)!;
@@ -34,6 +36,10 @@ const theme = inject(themeInjectKey)!;
 const handleLogout = async () => {
   await auth.logout();
   await auth.getGuestUser();
+  router.push("/");
+};
+
+const handleRefresh = () => {
   window.location.reload();
 };
 </script>
