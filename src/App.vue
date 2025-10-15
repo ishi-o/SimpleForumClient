@@ -1,10 +1,21 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <TopToolbar></TopToolbar>
   <router-view />
 </template>
+
+<script setup lang="ts">
+import { onMounted, provide } from "vue";
+import TopToolbar from "./components/TopToolbar.vue";
+import { authInjectKey, useAuth } from "./composables/useAuth";
+
+const auth = useAuth();
+
+onMounted(async () => {
+  await auth.initAuth();
+});
+
+provide(authInjectKey, auth);
+</script>
 
 <style lang="scss">
 #app {
@@ -13,18 +24,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>
