@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { UserLoginRequest } from "@/composables/useAuth";
+import router from "@/router";
 import apiAxios from "@/utils/axios";
 import { computed, reactive, ref } from "vue";
 
@@ -43,13 +44,18 @@ const isPwdMatch = computed(
 );
 
 const handleRegister = async () => {
-  await apiAxios
-    .post("/auth/register", {
+  registerMsg.value = "";
+  try {
+    await apiAxios.post("/auth/register", {
       ...userRegisterRequest,
-    })
-    .catch((error) => {
-      console.log(error);
     });
+    registerMsg.value = "注册成功！3秒后跳转到登录页";
+    setTimeout(() => {
+      router.push("/login");
+    }, 3000);
+  } catch (error: any) {
+    registerMsg.value = error.response?.data.data.message;
+  }
 };
 </script>
 
