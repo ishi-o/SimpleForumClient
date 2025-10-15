@@ -35,12 +35,8 @@ const handleLogin = async () => {
   loginMsg.value = "";
   try {
     await auth.login(userLoginRequest);
-    loginMsg.value = "登录成功！3秒后回到主页";
-    setTimeout(() => {
-      router.push("/");
-    }, 3000);
+    router.push("/");
   } catch (error: any) {
-    // console.log(error);
     loginMsg.value = error.response?.data.data.message;
   }
 };

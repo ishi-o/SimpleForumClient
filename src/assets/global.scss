@@ -1,0 +1,130 @@
+@keyframes gradient-light {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes gradient-dark {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+:root {
+  --text-color-light: #333;
+  --container-bg-color-light: rgba(255, 255, 255, 0.9);
+  --container-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --border-color-light: #e0e0e0;
+  --link-color-light: #007bff;
+  --link-hover-color-light: #0056b3;
+  --button-bg-color-light: #007bff;
+  --button-hover-bg-color-light: #0056b3;
+  --input-bg-color-light: #fff;
+  --input-border-color-light: #ccc;
+  --dd-bg-color-light: #f0f2f5;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.light {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient-light 15s ease infinite;
+  color: var(--text-color-light);
+}
+
+body.dark {
+  background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+  background-size: 400% 400%;
+  animation: gradient-dark 15s ease infinite;
+  color: #f0f2f5;
+  --text-color-light: #f0f2f5;
+  --container-bg-color-light: rgba(44, 44, 44, 0.9);
+  --container-shadow-light: 0 2px 8px rgba(255, 255, 255, 0.1);
+  --border-color-light: #444;
+  --link-color-light: #66abff;
+  --link-hover-color-light: #8bc3ff;
+  --button-bg-color-light: #66abff;
+  --button-hover-bg-color-light: #8bc3ff;
+  --input-bg-color-light: #333;
+  --input-border-color-light: #555;
+  --dd-bg-color-light: #333;
+}
+
+#app {
+  max-width: 960px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--container-bg-color-light);
+  border-radius: 8px;
+  box-shadow: var(--container-shadow-light);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(5px);
+}
+
+h1, h2, h3 {
+  color: var(--text-color-light);
+  text-align: center;
+}
+
+p {
+  line-height: 1.6;
+}
+
+a {
+  color: var(--link-color-light);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--link-hover-color-light);
+}
+
+button {
+  background-color: var(--button-bg-color-light);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  margin: 0 5px;
+  transform: scale(1);
+}
+
+button:hover {
+  background-color: var(--button-hover-bg-color-light);
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+form {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  background: var(--container-bg-color-light);
+  border-radius: 8px;
+  box-shadow: var(--container-shadow-light);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid var(--input-border-color-light);
+  background-color: var(--input-bg-color-light);
+  color: var(--text-color-light);
+  font-size: 16px;
+}
