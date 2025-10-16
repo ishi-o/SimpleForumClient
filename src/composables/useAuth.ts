@@ -37,7 +37,7 @@ export const roleMap = {
   [UserRole.MEMBER]: "普通用户",
 };
 
-const defaultGuest: User = {
+export const defaultGuest: User = {
   uid: -1,
   username: "",
   role: UserRole.GUEST,
@@ -95,6 +95,7 @@ export const useAuth = (): UseAuthReturn => {
     await apiAxios.post("/auth/logout").then(() => {
       user.value = defaultGuest;
     });
+    window.location.reload();
   };
 
   return {

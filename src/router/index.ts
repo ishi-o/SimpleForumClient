@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/BoardView.vue"),
   },
   {
-    path: "/p/:pid",
+    path: "/p/:bid/:pid",
     name: "post",
     component: () => import("@/views/PostView.vue"),
   },

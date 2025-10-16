@@ -1,17 +1,24 @@
 <template>
   <div class="post-profile">
-    <router-link :to="'/p/' + post.pid" class="post-title">
-      <h2>{{ post.title }}</h2>
+    <UserReference
+      :uid="post.authorId"
+      :username="post.authorName"
+    ></UserReference>
+    <router-link :to="'/p/' + post.bid + '/' + post.pid" class="post-title">
+      <h2>{{ post.title + (post.isPinned ? "(置顶)" : "") }}</h2>
     </router-link>
     <p class="post-meta">
       创建于: {{ new Date(post.createdAt).toLocaleDateString() }}
     </p>
+    <p class="post-meta">喜欢：{{ post.likes }}</p>
+    <p class="post-meta">拉踩：{{ post.dislikes }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Post } from "@/composables/usePost";
 import { defineProps } from "vue";
+import UserReference from "./UserReference.vue";
 
 interface PostProps {
   post: Post;

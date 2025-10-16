@@ -45,17 +45,19 @@ const isPwdMatch = computed(
 
 const handleRegister = async () => {
   registerMsg.value = "";
-  try {
-    await apiAxios.post("/auth/register", {
+  await apiAxios
+    .post("/auth/register", {
       ...userRegisterRequest,
+    })
+    .then(() => {
+      registerMsg.value = "注册成功！3秒后跳转到登录页";
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+    })
+    .catch((error) => {
+      registerMsg.value = error.response?.data.data.message;
     });
-    registerMsg.value = "注册成功！3秒后跳转到登录页";
-    setTimeout(() => {
-      router.push("/login");
-    }, 3000);
-  } catch (error: any) {
-    registerMsg.value = error.response?.data.data.message;
-  }
 };
 </script>
 
