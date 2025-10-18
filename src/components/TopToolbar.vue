@@ -6,9 +6,10 @@
         {{ theme.isDark.value ? "☀️" : "🌙" }}
       </button>
       <div v-if="auth.loggedIn.value" class="user-info">
-        <router-link :to="'/' + auth.user.value.uid" class="username">{{
-          auth.user.value.username
-        }}</router-link>
+        <UserReference
+          :uid="auth.user.value.uid"
+          :username="auth.user.value.username"
+        ></UserReference>
         <button @click="handleLogout">登出</button>
       </div>
       <div v-else class="guest-links">
@@ -19,6 +20,7 @@
           <button>注册</button>
         </router-link>
       </div>
+      <button @click="handleRefresh">刷新</button>
     </div>
   </nav>
 </template>
@@ -27,6 +29,7 @@
 import { authInjectKey } from "@/composables/useAuth";
 import { themeInjectKey } from "@/composables/useTheme";
 import { inject } from "vue";
+import UserReference from "./UserReference.vue";
 
 const auth = inject(authInjectKey)!;
 const theme = inject(themeInjectKey)!;
@@ -34,6 +37,10 @@ const theme = inject(themeInjectKey)!;
 const handleLogout = async () => {
   await auth.logout();
   await auth.getGuestUser();
+  window.location.replace("/");
+};
+
+const handleRefresh = () => {
   window.location.reload();
 };
 </script>
@@ -62,9 +69,5 @@ const handleLogout = async () => {
   display: flex;
   align-items: center;
   gap: 15px;
-}
-
-.username {
-  font-weight: bold;
 }
 </style>

@@ -1,5 +1,5 @@
+import HomeView from "@/views/HomeView.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/BoardView.vue"),
   },
   {
-    path: "/p/:pid",
+    path: "/p/:bid/:pid",
     name: "post",
     component: () => import("@/views/PostView.vue"),
   },

@@ -13,32 +13,36 @@
       required
     />
     <button type="submit">登录</button>
-    <div v-if="loginMsg">{{ loginMsg }}</div>
+    <h1 v-if="errorMsg.length > 0">{{ errorMsg }}</h1>
   </form>
 </template>
 
 <script setup lang="ts">
 import { authInjectKey, UserLoginRequest } from "@/composables/useAuth";
-import router from "@/router";
 import { inject, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const userLoginRequest = reactive<UserLoginRequest>({
   username: "",
   password: "",
 });
 
-const loginMsg = ref<string>("");
+const errorMsg = ref<string>("");
 
 const auth = inject(authInjectKey)!;
 
 const handleLogin = async () => {
-  loginMsg.value = "";
-  try {
-    await auth.login(userLoginRequest);
-    router.push("/");
-  } catch (error: any) {
-    loginMsg.value = error.response?.data.data.message;
-  }
+  errorMsg.value = "";
+  await auth
+    .login(userLoginRequest)
+    .then(() => {
+      window.location.replace("/");
+    })
+    .catch((error) => {
+      errorMsg.value = error.response?.data.data.message;
+    });
 };
 </script>
 

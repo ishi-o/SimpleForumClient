@@ -7,7 +7,11 @@
     <TopToolbar></TopToolbar>
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
-        <component :is="Component" />
+        <suspense>
+          <keep-alive>
+            <component :is="Component" :key="$route.fullPath" />
+          </keep-alive>
+        </suspense>
       </transition>
     </router-view>
   </div>
@@ -118,6 +122,12 @@ const particlesDarkOptions = {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+body {
+  overflow: auto;
+  height: 100vh;
+  width: 100%;
 }
 
 .fade-enter-active,
