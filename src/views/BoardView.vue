@@ -4,9 +4,7 @@
   <p class="board-meta">
     创建于: {{ new Date(board.createdAt).toLocaleDateString() }}
   </p>
-  <button v-if="!showEditor" @click="handleShowEditor">
-    创建属于你自己的版块！
-  </button>
+  <button v-if="!showEditor" @click="handleShowEditor">发表帖子！</button>
   <div v-else>
     <form @submit.prevent="handleCreatePost">
       <input

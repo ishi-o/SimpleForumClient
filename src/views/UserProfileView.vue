@@ -11,30 +11,39 @@
       <dt>用户角色：</dt>
       <dd>{{ roleMap[user.role] }}</dd>
     </dl>
-    <h2>您管理的版块</h2>
-    <div
-      @scroll="handleScroll"
-      ref="scrollContainer"
-      class="userboard-container"
-    >
-      <div v-for="(board, index) in boards" :key="index">
-        <button @click="removeBoard(board)">删除</button>
-        <BoardProfile :board="board"></BoardProfile>
+    <div v-if="auth.user.value.uid === Number(route.params.uid)">
+      <h2>您管理的版块</h2>
+      <div
+        @scroll="handleScroll"
+        ref="scrollContainer"
+        class="userboard-container"
+      >
+        <div v-for="(board, index) in boards" :key="index">
+          <button @click="removeBoard(board)">删除</button>
+          <BoardProfile :board="board"></BoardProfile>
+        </div>
+        <h2 v-if="boards.length === 0">暂未有版块！</h2>
+        <h2 v-else-if="noData === true">已经到底了！</h2>
       </div>
-      <h2 v-if="boards.length === 0">暂未有版块！</h2>
-      <h2 v-else-if="noData === true">已经到底了！</h2>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import BoardProfile from "@/components/BoardProfile.vue";
-import { defaultGuest, roleMap, User } from "@/composables/useAuth";
+import {
+  authInjectKey,
+  defaultGuest,
+  roleMap,
+  User,
+} from "@/composables/useAuth";
 import { Board } from "@/composables/useBoard";
 import { ApiResponse } from "@/utils/apiResponse";
 import apiAxios from "@/utils/axios";
-import { onMounted, ref } from "vue";
+import { inject, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
+const auth = inject(authInjectKey)!;
 
 const route = useRoute();
 

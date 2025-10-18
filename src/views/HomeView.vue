@@ -1,5 +1,14 @@
 <template>
   <h1 v-if="errorMsg.length > 0">{{ errorMsg }}</h1>
+  <form @submit.prevent="searchBoards">
+    <input
+      type="text"
+      placeholder="输入关键词搜索版块"
+      v-model="keywords"
+      required
+    />
+    <button type="submit">搜索</button>
+  </form>
   <button v-if="!showEditor" @click="handleShowEditor">
     创建属于你自己的版块！
   </button>
@@ -25,6 +34,12 @@
       {{ welcomeMsg }}
     </div>
     <div v-for="(board, index) in boards" :key="index">
+      <button
+        v-if="auth.user.value.role === UserRole.ADMIN"
+        @click="removeBoard(board)"
+      >
+        删除
+      </button>
       <BoardProfile :board="board"></BoardProfile>
     </div>
     <h2 v-if="boards.length === 0">暂未有版块！</h2>
@@ -34,11 +49,13 @@
 
 <script setup lang="ts">
 import BoardProfile from "@/components/BoardProfile.vue";
-import { authInjectKey } from "@/composables/useAuth";
+import { authInjectKey, UserRole } from "@/composables/useAuth";
 import { Board, BoardCreateRequest, useBoard } from "@/composables/useBoard";
+import router from "@/router";
 import { ApiResponse } from "@/utils/apiResponse";
 import apiAxios from "@/utils/axios";
 import { inject, onMounted, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
 
 const welcomeMsg = "欢迎来到Forum！";
 
@@ -56,11 +73,28 @@ const errorMsg = ref<string>("");
 
 const showEditor = ref<boolean>(false);
 
+const route = useRoute();
+
+const keywords = ref<string>((route.query.q as string) || "");
+const searchBoards = () => {
+  router.push({
+    path: "/",
+    query: {
+      q: keywords.value,
+    },
+  });
+};
+
 const handleShowEditor = () => {
   showEditor.value = true;
 };
 
 const auth = inject(authInjectKey)!;
+
+const removeBoard = async (board: Board) => {
+  await apiAxios.delete("/boards/" + board.bid);
+  window.location.reload();
+};
 
 const boardCreateRequest = reactive<BoardCreateRequest>({
   name: "",
@@ -88,6 +122,7 @@ const fetchBoards = async () => {
       params: {
         page: currPage.value,
         size: pageSize.value,
+        q: route.query.q,
       },
     })
     .then((resp) => {
