@@ -7,6 +7,13 @@
     <router-link :to="'/p/' + post.bid + '/' + post.pid" class="post-title">
       <h2>{{ post.title + (post.isPinned ? "(置顶)" : "") }}</h2>
     </router-link>
+    <p>
+      {{
+        post.content.length > 10
+          ? post.content.slice(0, 10) + "..."
+          : post.content
+      }}
+    </p>
     <p class="post-meta">
       创建于: {{ new Date(post.createdAt).toLocaleDateString() }}
     </p>

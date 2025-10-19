@@ -7,4 +7,6 @@ export interface Comment {
   likes: number;
   dislikes: number;
   targetId: number;
+  targetAuthorId: number;
+  targetAuthorName: string;
 }

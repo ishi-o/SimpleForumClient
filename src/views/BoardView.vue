@@ -4,6 +4,15 @@
   <p class="board-meta">
     创建于: {{ new Date(board.createdAt).toLocaleDateString() }}
   </p>
+  <form @submit.prevent="handleSearchPosts">
+    <input
+      type="text"
+      placeholder="输入关键词搜索帖子"
+      v-model="keywords"
+      required
+    />
+    <button type="submit">搜索</button>
+  </form>
   <button v-if="!showEditor" @click="handleShowEditor">发表帖子！</button>
   <div v-else>
     <form @submit.prevent="handleCreatePost">
@@ -26,6 +35,7 @@
     <div v-for="(post, index) in posts" :key="index">
       <button v-if="post.isPinned" @click="handlePin(post)">取消置顶</button>
       <button v-else @click="handlePin(post)">置顶</button>
+      <button @click="handleRemovePost(post)">删除</button>
       <PostProfile :post="post"></PostProfile>
     </div>
     <h2 v-if="posts.length === 0">该版块没有帖子！</h2>
@@ -38,6 +48,7 @@
 import PostProfile from "@/components/PostProfile.vue";
 import { Board } from "@/composables/useBoard";
 import { Post, PostCreateRequest } from "@/composables/usePost";
+import router from "@/router";
 import { ApiResponse } from "@/utils/apiResponse";
 import apiAxios from "@/utils/axios";
 import { onMounted, reactive, ref } from "vue";
@@ -61,6 +72,19 @@ const postCreateRequest = reactive<PostCreateRequest>({
   content: "",
 });
 
+const route = useRoute();
+
+const keywords = ref<string>((route.query.q as string) || "");
+
+const handleSearchPosts = () => {
+  router.push({
+    path: "/board/" + board.value.bid,
+    query: {
+      q: keywords.value,
+    },
+  });
+};
+
 const handleCreatePost = async () => {
   await apiAxios
     .post("/boards/" + board.value.bid + "/posts", {
@@ -74,8 +98,6 @@ const handleCreatePost = async () => {
     });
   window.location.reload();
 };
-
-const route = useRoute();
 
 const currPage = ref(0);
 
@@ -95,6 +117,7 @@ const fetchPosts = async () => {
       params: {
         page: currPage.value,
         size: pageSize.value,
+        q: route.query.q,
       },
     })
     .then((resp) => {
@@ -135,6 +158,17 @@ const handleScroll = async () => {
       });
     }
   }, 100);
+};
+
+const handleRemovePost = async (post: Post) => {
+  await apiAxios
+    .delete("/boards/" + post.bid + "/posts/" + post.pid)
+    .then(() => {
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 const handlePin = async (post: Post) => {

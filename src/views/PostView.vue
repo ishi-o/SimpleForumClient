@@ -8,8 +8,17 @@
     <h2>{{ post.title }}</h2>
     <p>{{ post.content }}</p>
     <div @scroll="handleScroll" ref="scrollContainer" class="comment-container">
+      <form @submit.prevent="handleCreateMainComment">
+        <input
+          type="text"
+          placeholder="点我发评论"
+          v-model="comment"
+          required
+        />
+        <button type="submit">发送</button>
+      </form>
       <div v-for="(mcmt, index) in cmts" :key="index">
-        <MainComment :mcmt="mcmt"></MainComment>
+        <MainComment :mcmt="mcmt" :bid="post.bid" :pid="post.pid"></MainComment>
       </div>
       <h2 v-if="cmts.length === 0">该帖子没有评论！</h2>
       <h2 v-else-if="noData === true">已经到底了！</h2>
@@ -106,6 +115,27 @@ const handleScroll = async () => {
 };
 
 const cmts = ref<Comment[]>([]);
+
+const comment = ref<string>("");
+const handleCreateMainComment = async () => {
+  await apiAxios
+    .post(
+      "/boards/" + post.value.bid + "/posts/" + post.value.pid + "/comments",
+      comment.value,
+      {
+        headers: {
+          "Content-Type": "text/plain; charset=UTF-8",
+        },
+      }
+    )
+    .then(() => {
+      window.location.reload();
+      comment.value = "";
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 onMounted(async () => {
   await apiAxios
